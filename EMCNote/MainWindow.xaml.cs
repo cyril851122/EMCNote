@@ -28,7 +28,7 @@ namespace EMCNote
 	{
 		private System.Windows.Forms.NotifyIcon notifyIcon;
 		private System.Windows.Forms.ContextMenu notificationMenu;
-		
+		AppController appctr;
 		
 		private void WindowMouseDown(object sender, MouseEventArgs e)
 		{
@@ -50,9 +50,24 @@ namespace EMCNote
 			NotifyIcon();
 		}
 		
+
+		
 		private void WindowLoad(object sender, RoutedEventArgs e)
 		{
 			// do something
+			appctr=AppController.GetInstance();
+			appctr.BindBookTree(tv_book);
+		}
+		
+		private void SelectBook(object sender, RoutedEventArgs e)
+		{
+			TreeViewItem tvi=e.OriginalSource as TreeViewItem;
+			Book selectedBook=tvi.Header as Book;
+			lv_note.ItemsSource=selectedBook.NoteItems;
+			
+			
+			
+			
 			
 		}
 		
@@ -122,8 +137,12 @@ namespace EMCNote
 		{
 
 		}
-
-		
-		
+		void SelectNote(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+		{
+			ListView lv= e.OriginalSource as ListView;
+			Note n = lv.SelectedItem as Note;
+			MessageBox.Show(n.Brief);
+		}
 	}
+	
 }

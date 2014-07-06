@@ -85,15 +85,18 @@
     <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="lv_res.xaml" />
     <Page Include="MainWindow.xaml" />
     <Page Include="res.xaml" />
+    <Page Include="tv_res.xaml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <EmbeddedResource Include="res\N.ico" />
-    <None Include="demo\default.enp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="default.enp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Resource Include="res\book-blue.ico" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="demo" />

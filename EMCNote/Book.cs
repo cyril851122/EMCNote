@@ -16,21 +16,32 @@ namespace EMCNote
 	public class Book
 	{
 		string path;
+		int level;
 		Book parent;
 		public Book(String Name)
 		{
 			this.Name=Name;
+			this.BookItems =new List<Book>();
+			this.NoteItems =new List<Note>();
 			FindAndSetPath();
 		}
 		public Book(String Name, Book Parent)
 		{
 			this.Name=Name;
+			this.BookItems =new List<Book>();
+			this.NoteItems =new List<Note>();
 			setParent(Parent);
 			FindAndSetPath();
 		}
 		public String Name
 		{
 			get;set;
+		}
+		public int Level { 
+			get
+			{
+				return this.level;
+			}
 		}
 		public List<Note> NoteItems
 		{
@@ -57,6 +68,10 @@ namespace EMCNote
 		{
 			this.parent=parent;
 		}
+		private void setLevel(int level)
+		{
+			this.level=level;
+		}
 		private void setPath(String path)
 		{
 			this.path=path;
@@ -67,18 +82,33 @@ namespace EMCNote
 		}
 		private void FindAndSetPath()
 		{
+			
 			String myPath="/";
 			Book myBook=this;
 			UInt16 depth=1;
 			while(myBook.Parent!=null){
 				depth++;
-				if(depth>256){
-					throw new Exception("The depth of Book had exceeded 256."); //by design
+				if(depth>3){
+					throw new Exception("The depth of Book had exceeded 3."); //by design
 				}
 				myBook=myBook.Parent;
 				myPath="/"+myBook.Name+myPath;
 			}
+			this.setLevel(depth);
 			this.setPath(myPath);
 		}
 	}
+	public class IndentConverter:System.Windows.Data.IValueConverter 
+    { 
+		private const int Indent=20;
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) 
+        { 
+        	var level = System.Convert.ToInt16(value);
+            return new System.Windows.Thickness(Indent* level -15, 0, 0, 0);
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo  culture) 
+        { 
+            throw new NotImplementedException(); 
+        } 
+    }
 }

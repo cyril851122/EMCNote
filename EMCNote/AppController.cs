@@ -8,6 +8,7 @@
  */
 using System;
 using System.IO;
+using System.Windows.Controls;
 using System.Windows.Forms;
 namespace EMCNote
 {
@@ -16,13 +17,16 @@ namespace EMCNote
 	/// </summary>
 	public sealed class AppController
 	{
-		private static AppController instance = new AppController();
+		private static AppController instance;
 		private Profile current_profile;
 		
-		public static AppController Instance {
-			get {
-				return instance;
+		public static AppController GetInstance() {
+			if (AppController.instance == null)
+			{
+				instance=new AppController();
 			}
+			return instance;
+			
 		}
 		
 		private AppController()
@@ -31,21 +35,29 @@ namespace EMCNote
 		}
 		private void LoadDefaultProfile()
 		{
-			String filename=App.Current.StartupUri.AbsolutePath+"\\default.enp";
+			String filename=Application.StartupPath+"\\default.enp";
 			if(File.Exists(filename))
 			{
 				current_profile=LoadProfile(filename);
 			}else{
 				current_profile=NewProfile(filename);
 			}
+			
 		}
 		private Profile NewProfile(String filename)
 		{
 			return new Profile(filename);
 		}
+		
+		public void BindBookTree(System.Windows.Controls.TreeView tv)
+		{
+			tv.ItemsSource=(current_profile.BookItems);
+			
+		}
+
 		public Profile LoadProfile(String filename)
 		{
-			//--TODO-- Load Profile from file
+			
 			Profile myprofile=new Profile(filename);
 			try{
 				myprofile.Helper.Load();
@@ -53,11 +65,15 @@ namespace EMCNote
 			catch(Exception e)
 			{
 				MessageBox.Show("Cannot load profile: "+e.Message,"Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
-				myprofile=new Profile(filename);
+				
 			}
-			return new Profile(filename);
+			return myprofile;
 		}
 		public void SaveProfile(String filename)
+		{
+			
+		}
+		public void BuildTreeView()
 		{
 			
 		}

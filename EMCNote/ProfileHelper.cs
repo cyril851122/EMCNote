@@ -34,15 +34,62 @@ namespace EMCNote
 		}
 		public void Load()
 		{
-			
+			this.MyProfile.Clear();
+			LoadFromXMLFile(this.MyProfile.FileName);
 		}
 		private XmlDocument XMLize()
 		{
 			return new XmlDocument();
 		}
-		private void LoadFromXMLFile()
+		private void LoadFromXMLFile(String filename)
 		{
-			
+			XmlDocument xd=new XmlDocument();
+			xd.Load(filename);
+			XmlNode profile_node=xd.ChildNodes[1];
+			if (profile_node.Name == "Profile")
+			{
+				this.MyProfile.ProfileName=profile_node.Attributes.GetNamedItem("Name").Value;
+			}
+			foreach (XmlNode x in profile_node.ChildNodes)
+			{
+				if(x.Name=="Book")
+				{
+					BuildBookTree(x);
+				}
+			}
+		}
+		private void BuildBookTree(XmlNode x)
+		{
+			Book created_book=this.MyProfile.newBook(x.Attributes.GetNamedItem("Name").Value);
+			foreach(XmlNode cx in x.ChildNodes)
+			{
+				if(cx.Name=="Book")
+				{
+					BuildBookTree(created_book,cx);
+				}else if(cx.Name=="Note")
+				{
+					BuildNote(created_book,cx);
+				}
+			}
+		}
+		private void BuildBookTree(Book b, XmlNode x)
+		{
+			Book created_book=this.MyProfile.newBook(x.Attributes.GetNamedItem("Name").Value,b);
+			foreach(XmlNode cx in x.ChildNodes)
+			{
+				if(cx.Name=="Book")
+				{
+					BuildBookTree(created_book,cx);
+				}else if(cx.Name=="Note")
+				{
+					BuildNote(created_book,cx);
+				}
+			}
+		}
+		private void  BuildNote(Book b,XmlNode x)
+		{
+			Note n=new Note(x.Attributes.GetNamedItem("Title").Value,b);
+			n.Content=x.InnerText;
 		}
 	}
 }

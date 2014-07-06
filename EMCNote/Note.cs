@@ -16,8 +16,16 @@ namespace EMCNote
 	/// </summary>
 	public class Note
 	{
-		public Note()
+		Book notebook;
+		public Note(String title, Book notebook)
 		{
+			this.Title=title;
+			this.SetBook(notebook);
+		}
+		private void SetBook(Book notebook)
+		{
+			this.notebook=notebook;
+			notebook.NoteItems.Add(this);
 		}
 		public String Title
 		{
@@ -31,11 +39,22 @@ namespace EMCNote
 		{
 			get;set;
 		}
-		public Book BelongTo
+		public Book NoteBook
 		{
-			get;set;
+			get
+			{
+				return this.notebook;
+			}
 		}
-		
+		public String Brief
+		{
+			get
+			{
+				String pure=System.Text.RegularExpressions.Regex.Replace(Content,"\\<\\/?[\\w]+\\>","");
+				pure=System.Text.RegularExpressions.Regex.Replace(pure,"\\r|\\n|\\t","");
+				return pure.Substring(0,pure.Length>100?100:pure.Length);
+			}
+		}
 
 	}
 	

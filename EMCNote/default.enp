@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Profile Name="Default">
+	<Book Name="Work">
+		<Book Name="Release">
+			<Book Name="Kittyhawk">
+				<Note Title="Netsheet"><![CDATA[<table><tr><td>SheetNet</td><td>10.10.10.1010110</td></tr></table>
+				 ]]></Note>
+				 <Note Title="SheetNet"><![CDATA[
+					<table><tr><td>GOGOGOGO</td><td>10.1fdsf0</td></tr><tr><td>GOGOGOGO</td><td>10.1fdsf0</td></tr>
+					</table>
+					<b>Title</b>
+				 ]]></Note>
+			</Book>
+			<Book Name="Rockies Snake River">
+			</Book>
+		</Book>
+		<Book Name="Misc">
+		</Book>
+	</Book>
+	<Book Name="Other">
+	</Book>
+</Profile>

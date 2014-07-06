@@ -22,6 +22,8 @@ namespace EMCNote
 		{
 			this.filename=filename;
 			this.helper=new ProfileHelper(this);
+
+			this.BookItems=new List<Book>();
 		}
 		public ProfileHelper Helper
 		{
@@ -44,25 +46,25 @@ namespace EMCNote
 			//---TODO--- Readonly//
 			get;set;
 		}
-		public List<Note> AllNotes
+		public List<Note> GetAllNotes()
 		{
-			//---TODO--- Readonly//
-			get;set;
+			return new List<Note>();
 		}
-		public List<Book> AllBooks
+		public List<Book> GetAllBooks()
 		{
-			//---TODO--- Readonly//
-			get;set;
+			return BookItems;
 		}
-		public void newBook(String Name)
+		public Book newBook(String Name)
 		{
 			Book mybook=new Book(Name);
 			BookItems.Add(mybook);
+			return mybook;
 		}
-		public void newBook(String Name, Book Parent)
+		public Book newBook(String Name, Book Parent)
 		{
 			Book mybook=new Book(Name,Parent);
-			BookItems.Add(mybook);
+			Parent.BookItems.Add(mybook);
+			return mybook;
 		}
 		public Book FindBookByPath(String Path)
 		{
@@ -71,6 +73,11 @@ namespace EMCNote
 		public Note FindNoteByPath(String Path)
 		{
 			return null;
+		}
+		public void Clear()
+		{
+			this.BookItems.Clear();
+			GC.Collect();
 		}
 		
 	}
