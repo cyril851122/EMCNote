@@ -89,7 +89,11 @@ namespace EMCNote
 		private void  BuildNote(Book b,XmlNode x)
 		{
 			Note n=new Note(x.Attributes.GetNamedItem("Title").Value,b);
-			n.Content=x.InnerText;
+			XmlNode docnode=x.SelectSingleNode("./Document");
+			if(docnode!=null){
+				n.Content=docnode.InnerText;
+				n.Document=System.Windows.Markup.XamlReader.Parse(docnode.InnerXml) as System.Windows.Documents.FlowDocument;
+			}
 		}
 	}
 }

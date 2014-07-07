@@ -7,6 +7,8 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.ComponentModel;
+using System.Windows.Documents;
 using System.Collections.Generic; 
 
 namespace EMCNote
@@ -14,9 +16,11 @@ namespace EMCNote
 	/// <summary>
 	/// Description of Note.
 	/// </summary>
-	public class Note
+	public class Note: INotifyPropertyChanged
 	{
 		Book notebook;
+		private String content;
+		private String title;
 		public Note(String title, Book notebook)
 		{
 			this.Title=title;
@@ -29,11 +33,27 @@ namespace EMCNote
 		}
 		public String Title
 		{
+			get
+			{
+				return title;
+			}
+			set
+			{
+				title=value; OnPropertyChanged(new PropertyChangedEventArgs("Title"));;
+			}
+		}
+		public FlowDocument Document
+		{
 			get;set;
 		}
 		public String Content
 		{
-			get;set;
+			set{
+				this.content=value;OnPropertyChanged(new PropertyChangedEventArgs("Brief"));
+			}
+			get{
+				return this.content;
+			}
 		}
 		public DateTime ModifiedAt
 		{
@@ -55,6 +75,18 @@ namespace EMCNote
 				return pure.Substring(0,pure.Length>100?100:pure.Length);
 			}
 		}
+		
+		#region INotifyPropertyChanged Members
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		public void OnPropertyChanged(PropertyChangedEventArgs e)
+		{
+			if (PropertyChanged != null)
+			{
+				PropertyChanged(this, e);
+			}
+		}
+		#endregion
 
 	}
 	

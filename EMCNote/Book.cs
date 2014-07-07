@@ -7,6 +7,7 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 namespace EMCNote
 {
@@ -18,18 +19,22 @@ namespace EMCNote
 		string path;
 		int level;
 		Book parent;
+		
+		
 		public Book(String Name)
 		{
 			this.Name=Name;
-			this.BookItems =new List<Book>();
-			this.NoteItems =new List<Note>();
+			this.BookItems =new BindingList<Book>();
+			this.NoteItems =new BindingList<Note>();
+			
+			
 			FindAndSetPath();
 		}
 		public Book(String Name, Book Parent)
 		{
 			this.Name=Name;
-			this.BookItems =new List<Book>();
-			this.NoteItems =new List<Note>();
+			this.BookItems =new BindingList<Book>();
+			this.NoteItems =new BindingList<Note>();
 			setParent(Parent);
 			FindAndSetPath();
 		}
@@ -43,13 +48,13 @@ namespace EMCNote
 				return this.level;
 			}
 		}
-		public List<Note> NoteItems
+		public BindingList<Note> NoteItems
 		{
 			//---TODO--- Readonly//
 			get;set;
-			
 		}
-		public List<Book> BookItems
+
+		public BindingList<Book> BookItems
 		{
 			//---TODO--- Readonly//
 			get;set;
@@ -78,7 +83,7 @@ namespace EMCNote
 		}
 		private void Sort()
 		{
-			NoteItems.Sort(new NoteSorter());
+			
 		}
 		private void FindAndSetPath()
 		{

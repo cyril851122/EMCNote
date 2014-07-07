@@ -28,6 +28,10 @@ namespace EMCNote
 	{
 		private System.Windows.Forms.NotifyIcon notifyIcon;
 		private System.Windows.Forms.ContextMenu notificationMenu;
+		private Note selectedNote;
+		private Book selectedBook;
+		private System.Windows.Forms.BindingSource noteSource;
+		
 		AppController appctr;
 		
 		private void WindowMouseDown(object sender, MouseEventArgs e)
@@ -48,6 +52,7 @@ namespace EMCNote
 			this.SizeChanged+=WindowResize;
 			this.Loaded+=WindowLoad;
 			NotifyIcon();
+			this.noteSource=new System.Windows.Forms.BindingSource();
 		}
 		
 
@@ -58,19 +63,7 @@ namespace EMCNote
 			appctr=AppController.GetInstance();
 			appctr.BindBookTree(tv_book);
 		}
-		
-		private void SelectBook(object sender, RoutedEventArgs e)
-		{
-			TreeViewItem tvi=e.OriginalSource as TreeViewItem;
-			Book selectedBook=tvi.Header as Book;
-			lv_note.ItemsSource=selectedBook.NoteItems;
 			
-			
-			
-			
-			
-		}
-		
 		private void WindowHide(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			e.Cancel=true;
@@ -135,13 +128,67 @@ namespace EMCNote
 		}
 		void menuNewNoteClick(object sender, System.Windows.RoutedEventArgs e)
 		{
+			appctr.newNote("New Note",selectedBook);
+		}
+		
+		void SelectBook(object sender, RoutedEventArgs e)
+		{
+			TreeViewItem tvi=e.OriginalSource as TreeViewItem;
+			selectedBook=tvi.Header as Book;
+			
+			lv_note.ItemsSource=selectedBook.NoteItems;
 
 		}
+			
 		void SelectNote(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
 		{
+			
+			//Save First
+			update_note_source();
+			// load new
 			ListView lv= e.OriginalSource as ListView;
 			Note n = lv.SelectedItem as Note;
-			MessageBox.Show(n.Brief);
+			if(n!=null)
+			{
+				selectedNote=n;
+				if(n.Document!=null)
+				{
+					rtb_note.Document=n.Document;
+				}else
+				{
+					rtb_note.Document=new FlowDocument();
+				}
+				tb_title.Text=n.Title;
+				grid_noteview.Visibility=Visibility.Visible;
+			}else
+			{
+				grid_noteview.Visibility=Visibility.Hidden;
+			}
+		}
+		void SaveNoteClick(object sender, RoutedEventArgs e)
+		{
+			
+
+		}
+		void Tb_title_LostFocus(object sender, System.Windows.RoutedEventArgs e)
+		{
+			update_note_source();
+		}
+		void Rtb_note_LostFocus(object sender, System.Windows.RoutedEventArgs e)
+		{
+			update_note_source();
+		}
+		
+		void update_note_source()
+		{
+			if(selectedNote !=null)
+			{
+				selectedNote.Document=rtb_note.Document;
+				System.Xml.XmlDocument xd=new System.Xml.XmlDocument();
+				xd.LoadXml(System.Windows.Markup.XamlWriter.Save(rtb_note.Document));
+				selectedNote.Content=xd.InnerText;
+				selectedNote.Title=tb_title.Text;
+			}
 		}
 	}
 	

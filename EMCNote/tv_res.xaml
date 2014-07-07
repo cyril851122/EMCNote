@@ -34,13 +34,13 @@
             </VisualStateGroup>
           </VisualStateManager.VisualStateGroups>
         
-          <Polygon x:Name="Collapsed" Points="4,4 8,7 4,10 4,4" Stroke="#515255" StrokeThickness="1">
+          <Polygon x:Name="Collapsed" Points="4,4 8,7 4,10 4,4" Stroke="#515255" StrokeThickness="1" >
 		      <Polygon.Fill>
 		       <SolidColorBrush Color="#515255" Opacity="0.4"/>
 		    </Polygon.Fill>
             
           </Polygon>
-        	<Polygon x:Name="Expanded" Points="4,6 10,6 7,10 4,6" Stroke="#515255" StrokeThickness="1" Visibility="Hidden">
+        	<Polygon x:Name="Expanded" Points="4,6 10,6 7,10 4,6" Stroke="#515255" StrokeThickness="1" Visibility="Hidden" >
 		      <Polygon.Fill>
 		       <SolidColorBrush Color="#515255" Opacity="0.4"/>
 		    </Polygon.Fill>

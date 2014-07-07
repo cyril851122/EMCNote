@@ -3,13 +3,16 @@
 	<Book Name="Work">
 		<Book Name="Release">
 			<Book Name="Kittyhawk">
-				<Note Title="Netsheet"><![CDATA[<table><tr><td>SheetNet</td><td>10.10.10.1010110</td></tr></table>
-				 ]]></Note>
-				 <Note Title="SheetNet"><![CDATA[
-					<table><tr><td>GOGOGOGO</td><td>10.1fdsf0</td></tr><tr><td>GOGOGOGO</td><td>10.1fdsf0</td></tr>
-					</table>
-					<b>Title</b>
-				 ]]></Note>
+				<Note Title="Netsheet">
+					<Document>
+						<FlowDocument PagePadding="5,0,5,0" Name="fd_note" AllowDrop="True" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"><Paragraph>dsfsfsdf</Paragraph></FlowDocument>
+					</Document>
+				</Note>
+				<Note Title="Bullshit">
+					<Document>
+						<FlowDocument PagePadding="5,0,5,0" Name="fd_note" AllowDrop="True" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"><Paragraph>dsfsfsdf</Paragraph></FlowDocument>
+					</Document>
+				</Note>
 			</Book>
 			<Book Name="Rockies Snake River">
 			</Book>

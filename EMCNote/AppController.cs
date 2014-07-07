@@ -54,7 +54,10 @@ namespace EMCNote
 			tv.ItemsSource=(current_profile.BookItems);
 			
 		}
-
+		public void newNote(String Title, Book b)
+		{
+			current_profile.newNote(Title,b);
+		}
 		public Profile LoadProfile(String filename)
 		{
 			

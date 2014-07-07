@@ -96,7 +96,8 @@
     <None Include="default.enp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Resource Include="res\book-blue.ico" />
+    <Resource Include="res\book_icon.png" />
+    <Resource Include="res\note_icon.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="demo" />

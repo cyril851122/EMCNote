@@ -7,6 +7,7 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 
 namespace EMCNote
@@ -23,7 +24,7 @@ namespace EMCNote
 			this.filename=filename;
 			this.helper=new ProfileHelper(this);
 
-			this.BookItems=new List<Book>();
+			this.BookItems=new BindingList<Book>();
 		}
 		public ProfileHelper Helper
 		{
@@ -41,18 +42,23 @@ namespace EMCNote
 				return this.filename;
 			}
 		}
-		public List<Book> BookItems
+		public BindingList<Book> BookItems
 		{
 			//---TODO--- Readonly//
 			get;set;
 		}
-		public List<Note> GetAllNotes()
+		public BindingList<Note> GetAllNotes()
 		{
-			return new List<Note>();
+			return null;
 		}
-		public List<Book> GetAllBooks()
+		public BindingList<Book> GetAllBooks()
 		{
 			return BookItems;
+		}
+		public Note newNote(String title,Book Parent)
+		{
+			Note n=new Note(title,Parent);
+			return n;
 		}
 		public Book newBook(String Name)
 		{
