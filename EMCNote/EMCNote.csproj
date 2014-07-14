@@ -50,15 +50,15 @@
     <Reference Include="System.Data.DataSetExtensions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="WindowsBase">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -73,8 +73,16 @@
     </Compile>
     <Compile Include="AppController.cs" />
     <Compile Include="Book.cs" />
+    <Compile Include="ColorPicker.xaml.cs">
+      <DependentUpon>ColorPicker.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NewBook.xaml.cs">
+      <DependentUpon>NewBook.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Note.cs" />
@@ -85,23 +93,45 @@
     <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="ColorPicker.xaml" />
     <Page Include="lv_res.xaml" />
     <Page Include="MainWindow.xaml" />
+    <Page Include="menu_res.xaml" />
+    <Page Include="NewBook.xaml" />
     <Page Include="res.xaml" />
     <Page Include="tv_res.xaml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <EmbeddedResource Include="res\N.ico" />
     <None Include="default.enp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
+    <Resource Include="res\editor\color.png" />
+    <Resource Include="res\add_icon.png" />
     <Resource Include="res\book_icon.png" />
-    <Resource Include="res\note_icon.png" />
+    <Resource Include="res\delete_icon.png" />
+    <Resource Include="res\editor\bold.png" />
+    <Resource Include="res\editor\center.png" />
+    <Resource Include="res\editor\italic.png" />
+    <Resource Include="res\editor\left.png" />
+    <Resource Include="res\editor\list.png" />
+    <Resource Include="res\editor\number.png" />
+    <Resource Include="res\editor\right.png" />
+    <Resource Include="res\editor\table.png" />
+    <Resource Include="res\editor\underline.png" />
+    <EmbeddedResource Include="res\N.ico" />
+    <Resource Include="res\save_icon.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="demo" />
     <Folder Include="res" />
+    <Folder Include="res\editor" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\html-xaml\convertHTML.csproj">
+      <Project>{DC692379-518F-4241-9BBA-4E3F4A9BCE13}</Project>
+      <Name>convertHTML</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

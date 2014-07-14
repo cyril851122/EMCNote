@@ -28,16 +28,18 @@ namespace EMCNote
 	{
 		private System.Windows.Forms.NotifyIcon notifyIcon;
 		private System.Windows.Forms.ContextMenu notificationMenu;
+		
 		private Note selectedNote;
 		private Book selectedBook;
-		private System.Windows.Forms.BindingSource noteSource;
+		
+		
 		
 		AppController appctr;
 		
 		private void WindowMouseDown(object sender, MouseEventArgs e)
 		{
 			this.DragMove();
-	   	}
+		}
 		private void WindowResize(object sender,SizeChangedEventArgs e)
 		{
 
@@ -52,7 +54,7 @@ namespace EMCNote
 			this.SizeChanged+=WindowResize;
 			this.Loaded+=WindowLoad;
 			NotifyIcon();
-			this.noteSource=new System.Windows.Forms.BindingSource();
+			
 		}
 		
 
@@ -62,8 +64,12 @@ namespace EMCNote
 			// do something
 			appctr=AppController.GetInstance();
 			appctr.BindBookTree(tv_book);
-		}
 			
+			DataObject.AddPastingHandler(rtb_note,rtb_note_Paste);
+		}
+		
+		
+		
 		private void WindowHide(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			e.Cancel=true;
@@ -95,6 +101,7 @@ namespace EMCNote
 			notifyIcon.ContextMenu = notificationMenu;
 			notifyIcon.Visible=true;
 		}
+		
 		
 		private System.Windows.Forms.MenuItem[] InitializeMenu()
 		{
@@ -128,7 +135,29 @@ namespace EMCNote
 		}
 		void menuNewNoteClick(object sender, System.Windows.RoutedEventArgs e)
 		{
-			appctr.newNote("New Note",selectedBook);
+			if(selectedBook!=null)
+			{
+				appctr.newNote("New Note",selectedBook);
+			}else{
+				MessageBox.Show("You must select a notebook first.");
+			}
+		}
+		void menuNewBookClick(object sender, System.Windows.RoutedEventArgs e)
+		{
+			
+			NewBook n=new NewBook();
+			n.Owner=this;
+			if(n.ShowDialog()==true)
+			{
+				String bookname=n.tb_bookname.Text;
+				if(selectedBook!=null)
+				{
+					appctr.newBook(bookname,selectedBook);
+				}else{
+					appctr.newBook(bookname);
+				}
+			}
+			
 		}
 		
 		void SelectBook(object sender, RoutedEventArgs e)
@@ -139,7 +168,7 @@ namespace EMCNote
 			lv_note.ItemsSource=selectedBook.NoteItems;
 
 		}
-			
+		
 		void SelectNote(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
 		{
 			
@@ -162,12 +191,13 @@ namespace EMCNote
 				grid_noteview.Visibility=Visibility.Visible;
 			}else
 			{
+				selectedNote =null;
 				grid_noteview.Visibility=Visibility.Hidden;
 			}
 		}
 		void SaveNoteClick(object sender, RoutedEventArgs e)
 		{
-			
+			appctr.SaveDefaultProfile();
 
 		}
 		void Tb_title_LostFocus(object sender, System.Windows.RoutedEventArgs e)
@@ -189,6 +219,78 @@ namespace EMCNote
 				selectedNote.Content=xd.InnerText;
 				selectedNote.Title=tb_title.Text;
 			}
+		}
+
+		
+		
+		
+		
+		
+		void deleteBookClick(object sender, RoutedEventArgs e)
+		{
+			if (selectedBook !=null)
+			{
+				String msg="";
+				if(selectedBook.HasChild)
+				{
+					msg="The Notebook is not empty. ";
+				}
+				msg+="Are you sure you want to delete the Notebook: <"+selectedBook.Name+">?";
+				if (MessageBox.Show(msg,"Confirm",MessageBoxButton.YesNo,MessageBoxImage.Question)==MessageBoxResult.Yes)
+				{
+					appctr.deleteBook(selectedBook);
+				}
+			}else{
+				MessageBox.Show("You didn't select any notebook.");
+			}
+		}
+		void deleteNoteClick(object sender, RoutedEventArgs e)
+		{
+			if(selectedNote != null)
+			{
+				String msg="Are you sure you want to delete the Note: <"+selectedNote.Title+">?";
+				if (MessageBox.Show(msg,"Confirm",MessageBoxButton.YesNo,MessageBoxImage.Question)==MessageBoxResult.Yes)
+				{
+					appctr.deleteNote(selectedNote);
+				}
+			}else{
+				MessageBox.Show("You didn't select any note.");
+			}
+		}
+		void deleteButtonClick(object sender, RoutedEventArgs e)
+		{
+			Button b=e.OriginalSource as Button;
+			b.ContextMenu.PlacementTarget=b;
+			b.ContextMenu.Placement=System.Windows.Controls.Primitives.PlacementMode.Bottom;
+			b.ContextMenu.IsOpen=true;
+			
+		}
+
+		void changeColor(object sender, RoutedEventArgs e)
+		{
+			System.Windows.Forms.ColorDialog cd =new System.Windows.Forms.ColorDialog();
+			cd.ShowDialog();
+			TextRange range = new TextRange(rtb_note.Selection.Start, rtb_note.Selection.End);
+			range.ApplyPropertyValue(FlowDocument.ForegroundProperty, new SolidColorBrush(System.Windows.Media.Color.FromArgb(cd.Color.A,cd.Color.R,cd.Color.G,cd.Color.B)));
+			
+		}
+		
+		void rtb_note_Paste(object sender, DataObjectPastingEventArgs e)
+		{
+			e.Handled = true;
+			e.CancelCommand();
+			TextRange range = new TextRange(rtb_note.Selection.Start, rtb_note.Selection.End);
+			if(Clipboard.ContainsImage())
+			{
+				System.Windows.Media.Imaging.BitmapSource img=Clipboard.GetImage();
+				String s=Utility.ImageSourceToBase64String(img);
+				rtb_note.AppendText(s);
+				
+			}
+			
+			
+			range.Text=Clipboard.GetText();
+			rtb_note.Selection.Select(rtb_note.Selection.End,rtb_note.Selection.End);
 		}
 	}
 	

@@ -58,6 +58,37 @@ namespace EMCNote
 		{
 			current_profile.newNote(Title,b);
 		}
+		
+		public void newBook(String Name, Book Parent)
+		{
+			current_profile.newBook(Name,Parent);
+		}
+		
+		public void deleteBook(Book b)
+		{
+			try{
+				current_profile.deleteBook(b);
+			}catch (Exception e)
+			{
+				MessageBox.Show(e.Message);
+			}
+		}
+		
+		public void deleteNote(Note n)
+		{
+			try{
+				current_profile.deleteNote(n);
+			}catch (Exception e)
+			{
+				MessageBox.Show(e.Message);
+			}
+		}
+		
+		public void newBook(String Name)
+		{
+			current_profile.newBook(Name);
+		}
+		
 		public Profile LoadProfile(String filename)
 		{
 			
@@ -72,13 +103,15 @@ namespace EMCNote
 			}
 			return myprofile;
 		}
+		public void SaveDefaultProfile()
+		{
+			String filename=Application.StartupPath+"\\default.enp";
+			SaveProfile(filename);
+		}
 		public void SaveProfile(String filename)
 		{
-			
+			current_profile.Helper.Save();
 		}
-		public void BuildTreeView()
-		{
-			
-		}
+
 	}
 }

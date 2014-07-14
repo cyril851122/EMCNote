@@ -48,6 +48,17 @@ namespace EMCNote
 				return this.level;
 			}
 		}
+		public bool HasChild
+		{
+			get{
+				if(NoteItems.Count + BookItems.Count!=0)
+				{
+					return true;
+				}else{
+					return false;
+				}
+			}
+		}
 		public BindingList<Note> NoteItems
 		{
 			//---TODO--- Readonly//
@@ -69,6 +80,7 @@ namespace EMCNote
 		{
 			get { return path; }
 		}
+		
 		private void setParent(Book parent)
 		{
 			this.parent=parent;

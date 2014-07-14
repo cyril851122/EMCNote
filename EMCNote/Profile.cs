@@ -55,6 +55,32 @@ namespace EMCNote
 		{
 			return BookItems;
 		}
+		
+		public void deleteBook(Book b)
+		{
+			if(b.Parent!=null)
+			{
+				b.Parent.BookItems.Remove(b);
+			}else{
+				if(this.BookItems.Contains(b))
+				{
+					this.BookItems.Remove(b);
+				}else{
+					throw new Exception("Cannot locate the selected notebook.");
+				}
+			}
+		}
+		
+		public void deleteNote(Note n)
+		{
+			if(n.NoteBook.NoteItems.Contains(n))
+			{
+				n.NoteBook.NoteItems.Remove(n);
+			}else{
+					throw new Exception("Cannot locate the selected note.");
+			}
+		}
+		
 		public Note newNote(String title,Book Parent)
 		{
 			Note n=new Note(title,Parent);
