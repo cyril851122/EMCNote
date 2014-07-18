@@ -94,12 +94,22 @@ namespace EMCNote
 			{
 				BitmapSource bms=n.Attachments[Convert.ToInt32(img.Tag)];
 				img.Source=bms;
+				
+				SaveAttachment(attachement_node,img.Tag.ToString(),bms);
 			}
-			SaveAttachments(attachement_node,n.Attachments);
+			//SaveAttachments(attachement_node,n.Attachments);
 			
 			
 		}
-		
+		private void SaveAttachment(XmlNode att_node, String key, BitmapSource bmp)
+		{
+			XmlElement image_xe=att_node.OwnerDocument.CreateElement("Img");
+			image_xe.SetAttribute("key",key);
+			XmlCDataSection cdata=image_xe.OwnerDocument.CreateCDataSection(Utility.ImageSourceToBase64String(bmp));
+			image_xe.AppendChild(cdata);
+			att_node.AppendChild(image_xe);
+			
+		}
 		private void SaveAttachments(XmlNode att_node,Dictionary<int,BitmapSource> att)
 		{
 			//

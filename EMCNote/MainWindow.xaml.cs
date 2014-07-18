@@ -288,7 +288,11 @@ namespace EMCNote
 				{
 					throw new Exception("Not selecting any Note.");
 				}
-				Int32 id=selectedNote.Attachments.Count;
+				Int32 id=0;
+				while(selectedNote.Attachments.ContainsKey(id))
+				{
+					id++;
+				}
 				selectedNote.Attachments.Add(id ,img);
 				System.Windows.Controls.Image i=new System.Windows.Controls.Image();
 				i.Width=img.Width;
