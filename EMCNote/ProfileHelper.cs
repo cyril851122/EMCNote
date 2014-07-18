@@ -8,7 +8,10 @@
  */
 using System;
 using System.Xml;
-
+using System.Windows.Documents;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Media.Imaging;
 
 namespace EMCNote
 {
@@ -73,10 +76,41 @@ namespace EMCNote
 		{
 			XmlElement created_node=x.OwnerDocument.CreateElement("Note");
 			XmlElement document_node=x.OwnerDocument.CreateElement("Document");
+			XmlElement attachement_node=x.OwnerDocument.CreateElement("Attachment");
 			created_node.SetAttribute("Title",n.Title);
 			x.AppendChild(created_node);
 			created_node.AppendChild(document_node);
+			created_node.AppendChild(attachement_node);
+			
+			// Clear ImageSource
+			foreach (System.Windows.Controls.Image img in Utility.FindImages(n.Document))
+			{
+				img.Source=null;
+			}
+			// Save to file
 			document_node.InnerXml=System.Windows.Markup.XamlWriter.Save(n.Document);
+			// Set back Imagesource
+			foreach (System.Windows.Controls.Image img in Utility.FindImages(n.Document))
+			{
+				BitmapSource bms=n.Attachments[Convert.ToInt32(img.Tag)];
+				img.Source=bms;
+			}
+			SaveAttachments(attachement_node,n.Attachments);
+			
+			
+		}
+		
+		private void SaveAttachments(XmlNode att_node,Dictionary<int,BitmapSource> att)
+		{
+			//
+			foreach (KeyValuePair<int,BitmapSource> kw_pair in att)
+			{
+				XmlElement image_xe=att_node.OwnerDocument.CreateElement("Img");
+				image_xe.SetAttribute("key",kw_pair.Key.ToString());
+				XmlCDataSection cdata=image_xe.OwnerDocument.CreateCDataSection(Utility.ImageSourceToBase64String(kw_pair.Value));
+				image_xe.AppendChild(cdata);
+				att_node.AppendChild(image_xe);
+			}
 			
 		}
 		
@@ -128,10 +162,21 @@ namespace EMCNote
 		{
 			Note n=new Note(x.Attributes.GetNamedItem("Title").Value,b);
 			XmlNode docnode=x.SelectSingleNode("./Document");
+			XmlNode attnode=x.SelectSingleNode("./Attachment");
 			if(docnode!=null){
 				n.Content=docnode.InnerText;
+				
 				n.Document=System.Windows.Markup.XamlReader.Parse(docnode.InnerXml) as System.Windows.Documents.FlowDocument;
 				
+				// find all Images and set source
+				foreach(System.Windows.Controls.Image img in Utility.FindImages(n.Document))
+				{
+					String base64str=attnode.SelectSingleNode("./Img[@key='"+img.Tag+"']").InnerText;
+					BitmapSource bms=Utility.Base64StringToImageSource(base64str);
+					
+					img.Source=bms;
+					n.Attachments.Add(Convert.ToInt32(img.Tag),bms);
+				}
 			}
 		}
 	}

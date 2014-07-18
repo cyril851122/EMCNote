@@ -12,6 +12,9 @@ using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Media.Imaging;
+using System.Windows.Documents;
+using System.Linq;
+using System.Collections.Generic;
 using System.Xml;
 
 namespace EMCNote
@@ -21,6 +24,9 @@ namespace EMCNote
 	/// </summary>
 	public static class Utility
 	{
+		
+		[System.Runtime.InteropServices.DllImport("gdi32.dll")]
+		public static extern bool DeleteObject(IntPtr hObject);
 		public static BitmapImage BitmapToBitmapImage(Bitmap source){
 			BitmapImage bitmapImage;
 			using(MemoryStream memory = new MemoryStream())
@@ -35,36 +41,26 @@ namespace EMCNote
 			}
 			return bitmapImage;
 		}
+		
 		public static String ImageSourceToBase64String(BitmapSource source)
 		{
-			int bufferSize = 1000;
-			byte[] buffer = new byte[bufferSize];
-			int readBytes = 0;
 			Bitmap bmp=Utility.BitmapSourceToBitmap(source);
-			MemoryStream ms=new MemoryStream();
-			MemoryStream result=new MemoryStream();
-			bmp.Save(ms,ImageFormat.Png);
-			ms.Position=0;
-			XmlWriterSettings settings=new XmlWriterSettings();
-			settings.OmitXmlDeclaration = true;
-			settings.ConformanceLevel = ConformanceLevel.Fragment;
-			settings.CloseOutput = false;
-			using (XmlWriter writer = XmlWriter.Create(result,settings)) {
-				writer.WriteStartElement("Image");
-				BinaryReader br = new BinaryReader(ms);
-				do {
-					readBytes = br.Read(buffer, 0, bufferSize);
-					writer.WriteBase64(buffer, 0, readBytes);
-				} while (bufferSize <= readBytes);
-				br.Close();
-				writer.WriteEndElement();
-			}
-
-			StreamReader sr=new StreamReader(result);
-			result.Position=0;
-			return sr.ReadToEnd();
+			MemoryStream ms = new MemoryStream();
+			bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+			byte[] arr = new byte[ms.Length];
+			ms.Position = 0;
+			ms.Read(arr, 0, (int)ms.Length);
+			ms.Close();
+			String strbaser64 = Convert.ToBase64String(arr);
+			return strbaser64;
 		}
-		
+		public static BitmapSource Base64StringToImageSource(String str)
+		{
+			byte[] arr = Convert.FromBase64String(str);
+			MemoryStream ms=new MemoryStream(arr);
+			Bitmap bmp = new Bitmap(ms);
+			return Utility.BitmapToBitmapSource(bmp);
+		}
 		public static System.Drawing.Bitmap BitmapSourceToBitmap(BitmapSource s)
 		{
 			System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(s.PixelWidth, s.PixelHeight, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
@@ -72,6 +68,51 @@ namespace EMCNote
 			s.CopyPixels(Int32Rect.Empty, data.Scan0, data.Height * data.Stride, data.Stride);
 			bmp.UnlockBits(data);
 			return bmp;
+		}
+		public static BitmapSource BitmapToBitmapSource(Bitmap bmp)
+		{
+			IntPtr ip = bmp.GetHbitmap();
+			BitmapSource bs=System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(ip,IntPtr.Zero,Int32Rect.Empty,System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+			DeleteObject(ip);
+			return bs;
+		}
+		
+		public static IEnumerable<System.Windows.Controls.Image> FindImages(FlowDocument document)
+		{
+			return document.Blocks.SelectMany(block => FindImages(block));
+		}
+
+		public static IEnumerable<System.Windows.Controls.Image> FindImages(Block block)
+		{
+			if (block is Table)
+			{
+				return ((Table)block).RowGroups
+					.SelectMany(x => x.Rows)
+					.SelectMany(x => x.Cells)
+					.SelectMany(x => x.Blocks)
+					.SelectMany(innerBlock => FindImages(innerBlock));
+			}
+			if (block is Paragraph)
+			{
+				return ((Paragraph)block).Inlines
+					.OfType<InlineUIContainer>()
+					.Where(x => x.Child is System.Windows.Controls.Image)
+					.Select(x => x.Child as System.Windows.Controls.Image);
+			}
+			if (block is BlockUIContainer)
+			{
+				System.Windows.Controls.Image i = ((BlockUIContainer)block).Child as System.Windows.Controls.Image;
+				return i == null
+					? new List<System.Windows.Controls.Image>()
+					: new List<System.Windows.Controls.Image>(new[] { i });
+			}
+			if (block is List)
+			{
+				return ((List)block).ListItems.SelectMany(listItem => listItem
+				                                          .Blocks
+				                                          .SelectMany(innerBlock => FindImages(innerBlock)));
+			}
+			throw new InvalidOperationException("Unknown block type: " + block.GetType());
 		}
 	}
 }

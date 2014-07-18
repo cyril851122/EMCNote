@@ -10,6 +10,7 @@ using System;
 using System.IO;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Linq;
 namespace EMCNote
 {
 	/// <summary>
@@ -98,8 +99,7 @@ namespace EMCNote
 			}
 			catch(Exception e)
 			{
-				MessageBox.Show("Cannot load profile: "+e.Message,"Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
-				
+				MessageBox.Show("Load Profile Error:\r\n"+e.Message,"Load Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 			}
 			return myprofile;
 		}
@@ -112,6 +112,5 @@ namespace EMCNote
 		{
 			current_profile.Helper.Save();
 		}
-
 	}
 }

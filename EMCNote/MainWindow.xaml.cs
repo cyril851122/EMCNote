@@ -197,6 +197,7 @@ namespace EMCNote
 		}
 		void SaveNoteClick(object sender, RoutedEventArgs e)
 		{
+			update_note_source();
 			appctr.SaveDefaultProfile();
 
 		}
@@ -283,14 +284,24 @@ namespace EMCNote
 			if(Clipboard.ContainsImage())
 			{
 				System.Windows.Media.Imaging.BitmapSource img=Clipboard.GetImage();
-				String s=Utility.ImageSourceToBase64String(img);
-				rtb_note.AppendText(s);
+				if(selectedNote==null)
+				{
+					throw new Exception("Not selecting any Note.");
+				}
+				Int32 id=selectedNote.Attachments.Count;
+				selectedNote.Attachments.Add(id ,img);
+				System.Windows.Controls.Image i=new System.Windows.Controls.Image();
+				i.Width=img.Width;
+				i.Height=img.Height;
+				i.Source=img;
+				i.Tag=id;
+				InlineUIContainer iuc=new InlineUIContainer(i,rtb_note.CaretPosition);
+				
+				
 				
 			}
-			
-			
 			range.Text=Clipboard.GetText();
-			rtb_note.Selection.Select(rtb_note.Selection.End,rtb_note.Selection.End);
+			range.Select(range.End,range.End);
 		}
 	}
 	

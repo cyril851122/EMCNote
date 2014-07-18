@@ -10,6 +10,7 @@ using System;
 using System.ComponentModel;
 using System.Windows.Documents;
 using System.Collections.Generic; 
+using System.Windows.Media.Imaging;
 
 namespace EMCNote
 {
@@ -25,6 +26,7 @@ namespace EMCNote
 		{
 			this.Title=title;
 			this.SetBook(notebook);
+			this.Attachments=new Dictionary<int, BitmapSource>();
 		}
 		private void SetBook(Book notebook)
 		{
@@ -59,6 +61,12 @@ namespace EMCNote
 		{
 			get;set;
 		}
+		
+		public Dictionary<Int32,BitmapSource> Attachments
+		{
+			get;set;
+		}
+		
 		public Book NoteBook
 		{
 			get
