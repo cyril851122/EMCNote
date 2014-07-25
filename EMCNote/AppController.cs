@@ -33,6 +33,7 @@ namespace EMCNote
 		private AppController()
 		{
 			LoadDefaultProfile();
+			
 		}
 		private void LoadDefaultProfile()
 		{
@@ -52,9 +53,13 @@ namespace EMCNote
 		
 		public void BindBookTree(System.Windows.Controls.TreeView tv)
 		{
-			tv.ItemsSource=(current_profile.BookItems);
-			
+			tv.ItemsSource=(current_profile.BookItems);			
 		}
+		public void BindNoteList(System.Windows.Controls.ListView lv)
+		{
+			lv.ItemsSource=(current_profile.AllNotes);
+		}
+		
 		public void newNote(String Title, Book b)
 		{
 			current_profile.newNote(Title,b);
@@ -79,6 +84,7 @@ namespace EMCNote
 		{
 			try{
 				current_profile.deleteNote(n);
+				
 			}catch (Exception e)
 			{
 				MessageBox.Show(e.Message);

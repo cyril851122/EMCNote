@@ -1,7 +1,7 @@
 <Window x:Class="EMCNote.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="EMCNote" Height="768" Width="1024"  ResizeMode="CanResize" WindowStyle="SingleBorderWindow" Background="White">
+        Title="EMC Note" Height="768" Width="1024"  ResizeMode="CanResize" WindowStyle="SingleBorderWindow" Background="White">
 	<Window.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
@@ -11,17 +11,24 @@
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Window.Resources>
-	
+	<Window.CommandBindings>
+		<CommandBinding Command="Save" Executed="SaveNoteClick" />
+	</Window.CommandBindings>
+	<Window.InputBindings>
+		<KeyBinding Key="S" Modifiers="Control" Command="Save"/>
+	</Window.InputBindings>
 	<DockPanel>
 		<StackPanel Orientation="Vertical" DockPanel.Dock="Top">
 			<Menu>
 				<MenuItem Click="SaveNoteClick" >
+					
 					<MenuItem.Header>
 						<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
 							<Image Source="res/save_icon.png" Width="16" Height="16" Margin="0,0,5,0"></Image>
 							<TextBlock Text="Save" Height="16"></TextBlock>
 						</StackPanel>
 					</MenuItem.Header>
+				
 				</MenuItem>
 				<MenuItem>
 					<MenuItem.Header>
@@ -59,7 +66,7 @@
 			              HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
 			<Border Grid.Column="1" BorderBrush="#D1D4DF" BorderThickness="0,0,1,0"/>
 			
-			<TreeView Name="tv_book"  Margin="1,0" BorderThickness="0" Background="#FBFCFF" Grid.Column="0" TreeViewItem.Selected="SelectBook">
+			<TreeView Name="tv_book"  Margin="1,0" BorderThickness="0" Background="#FBFCFF" Grid.Column="0" TreeViewItem.Selected="SelectBook" MouseUp="Tv_book_MouseUp">
 				<TreeView.ItemTemplate>
 					<HierarchicalDataTemplate DataType = "Book" ItemsSource="{Binding BookItems}">
 						<Border x:Name="itemBorder" >

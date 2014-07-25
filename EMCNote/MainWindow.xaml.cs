@@ -16,6 +16,8 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 using EMCNote;
 
@@ -24,6 +26,7 @@ namespace EMCNote
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
+	/// 
 	public partial class MainWindow : Window
 	{
 		private System.Windows.Forms.NotifyIcon notifyIcon;
@@ -31,10 +34,9 @@ namespace EMCNote
 		
 		private Note selectedNote;
 		private Book selectedBook;
-		
-		
-		
 		AppController appctr;
+		
+		HotKey k;
 		
 		private void WindowMouseDown(object sender, MouseEventArgs e)
 		{
@@ -50,22 +52,30 @@ namespace EMCNote
 			this.Closing += WindowHide;
 			this.Closed+=WindowClose;
 			this.StateChanged+=WindowShowHide;
-			this.MouseLeftButtonDown+=WindowMouseDown;
+			//this.MouseLeftButtonDown+=WindowMouseDown;
 			this.SizeChanged+=WindowResize;
 			this.Loaded+=WindowLoad;
 			NotifyIcon();
-			
+			this.k= new HotKey(Key.Q, KeyModifier.Ctrl | KeyModifier.Alt, OnHotKeyHandler);
 		}
 		
-
+		private void OnHotKeyHandler(HotKey hotKey)
+		{
+			menuMainClick(hotKey,new EventArgs());
+		}
 		
 		private void WindowLoad(object sender, RoutedEventArgs e)
 		{
 			// do something
 			appctr=AppController.GetInstance();
 			appctr.BindBookTree(tv_book);
-			
+			appctr.BindNoteList(lv_note);
+			if(lv_note.HasItems==true && selectedNote== null)
+			{
+				lv_note.SelectedIndex=0;
+			}
 			DataObject.AddPastingHandler(rtb_note,rtb_note_Paste);
+			
 		}
 		
 		
@@ -138,6 +148,7 @@ namespace EMCNote
 			if(selectedBook!=null)
 			{
 				appctr.newNote("New Note",selectedBook);
+				selectedBook.AllNoteItems=selectedBook.AllNoteItems;
 			}else{
 				MessageBox.Show("You must select a notebook first.");
 			}
@@ -164,9 +175,12 @@ namespace EMCNote
 		{
 			TreeViewItem tvi=e.OriginalSource as TreeViewItem;
 			selectedBook=tvi.Header as Book;
+			lv_note.ItemsSource=selectedBook.AllNoteItems;
 			
-			lv_note.ItemsSource=selectedBook.NoteItems;
-
+			if(lv_note.HasItems==true && selectedNote== null)
+			{
+				lv_note.SelectedIndex=0;
+			}
 		}
 		
 		void SelectNote(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -180,26 +194,31 @@ namespace EMCNote
 			if(n!=null)
 			{
 				selectedNote=n;
-				if(n.Document!=null)
-				{
-					rtb_note.Document=n.Document;
-				}else
-				{
-					rtb_note.Document=new FlowDocument();
-				}
-				tb_title.Text=n.Title;
-				grid_noteview.Visibility=Visibility.Visible;
+				ShowNote(n);
+				
 			}else
 			{
 				selectedNote =null;
 				grid_noteview.Visibility=Visibility.Hidden;
 			}
 		}
+		
+		void ShowNote(Note n)
+		{
+			if(n.Document!=null)
+			{
+				rtb_note.Document=n.Document;
+			}else
+			{
+				rtb_note.Document=new FlowDocument();
+			}
+			tb_title.Text=n.Title;
+			grid_noteview.Visibility=Visibility.Visible;
+		}
 		void SaveNoteClick(object sender, RoutedEventArgs e)
 		{
 			update_note_source();
 			appctr.SaveDefaultProfile();
-
 		}
 		void Tb_title_LostFocus(object sender, System.Windows.RoutedEventArgs e)
 		{
@@ -222,11 +241,7 @@ namespace EMCNote
 			}
 		}
 
-		
-		
-		
-		
-		
+
 		void deleteBookClick(object sender, RoutedEventArgs e)
 		{
 			if (selectedBook !=null)
@@ -247,14 +262,23 @@ namespace EMCNote
 		}
 		void deleteNoteClick(object sender, RoutedEventArgs e)
 		{
-			if(selectedNote != null)
-			{
-				String msg="Are you sure you want to delete the Note: <"+selectedNote.Title+">?";
+			if(lv_note.SelectedItems.Count>0){
+				String msg="Are you sure you want to delete "+lv_note.SelectedItems.Count.ToString()+ " notes?";
 				if (MessageBox.Show(msg,"Confirm",MessageBoxButton.YesNo,MessageBoxImage.Question)==MessageBoxResult.Yes)
 				{
-					appctr.deleteNote(selectedNote);
+					foreach (Note n in lv_note.SelectedItems)
+					{
+						appctr.deleteNote(n);
+					}
+				}
+				if(selectedBook!=null)
+				{
+					selectedBook.AllNoteItems=selectedBook.AllNoteItems;
+				}else{
+					appctr.BindNoteList(lv_note);
 				}
 			}else{
+				
 				MessageBox.Show("You didn't select any note.");
 			}
 		}
@@ -300,12 +324,43 @@ namespace EMCNote
 				i.Source=img;
 				i.Tag=id;
 				InlineUIContainer iuc=new InlineUIContainer(i,rtb_note.CaretPosition);
-				
-				
-				
 			}
-			range.Text=Clipboard.GetText();
+			
+			if(Clipboard.ContainsData("HTML Format"))
+			{
+				range.Text=Clipboard.GetData("HTML Format").ToString();
+			}
+			//range.Text=Clipboard.GetText();
 			range.Select(range.End,range.End);
+		}
+		
+		private void UnselectTreeViewItem(TreeView pTreeView)
+		{
+			if(pTreeView.SelectedItem == null)
+				return;
+
+			if(pTreeView.SelectedItem is TreeViewItem)
+			{
+				(pTreeView.SelectedItem as TreeViewItem).IsSelected = false;
+			}
+			else
+			{
+				TreeViewItem item = pTreeView.ItemContainerGenerator.ContainerFromIndex(0) as TreeViewItem;
+				if (item != null)
+				{
+					item.IsSelected = true;
+					item.IsSelected = false;
+				}
+			}
+		}
+
+		void Tv_book_MouseUp(object sender, MouseButtonEventArgs e)
+		{
+			
+			if( !(e.OriginalSource is Border)&&!(e.OriginalSource is System.Windows.Controls.Image) && !(e.OriginalSource is TextBlock))
+			{
+				UnselectTreeViewItem(tv_book);
+			}
 		}
 	}
 	

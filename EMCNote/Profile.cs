@@ -19,12 +19,14 @@ namespace EMCNote
 	{
 		private String filename;
 		private ProfileHelper helper;
+		private  BindingList<Note> allnotes;
 		public Profile(String filename)
 		{
 			this.filename=filename;
 			this.helper=new ProfileHelper(this);
 
 			this.BookItems=new BindingList<Book>();
+			this.allnotes=new BindingList<Note>();
 		}
 		public ProfileHelper Helper
 		{
@@ -44,17 +46,39 @@ namespace EMCNote
 		}
 		public BindingList<Book> BookItems
 		{
-			//---TODO--- Readonly//
 			get;set;
 		}
-		public BindingList<Note> GetAllNotes()
+		private void UpdateAllNotes()
 		{
-			return null;
+			this.allnotes.Clear();
+			foreach(Book b in BookItems)
+			{
+				AddSubNote(b);
+			}
 		}
-		public BindingList<Book> GetAllBooks()
+		private void AddSubNote(Book b)
 		{
-			return BookItems;
+			foreach (Note n in b.NoteItems)
+			{
+				this.allnotes.Add(n);
+			}
+			foreach (Book subb in b.BookItems)
+			{
+				AddSubNote(subb);
+			}
 		}
+		
+		public BindingList<Note> AllNotes
+		{
+			get{
+				UpdateAllNotes();
+				return this.allnotes;
+			}
+			set{
+				UpdateAllNotes();
+			}
+		}
+
 		
 		public void deleteBook(Book b)
 		{

@@ -8,6 +8,7 @@
  */
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Collections.Generic;
 namespace EMCNote
 {
@@ -19,30 +20,32 @@ namespace EMCNote
 		string path;
 		int level;
 		Book parent;
-		
+		BindingList<Note> allnoteitems;
 		
 		public Book(String Name)
 		{
-			this.Name=Name;
-			this.BookItems =new BindingList<Book>();
-			this.NoteItems =new BindingList<Note>();
-			
-			
+			initialize(Name);
 			FindAndSetPath();
 		}
 		public Book(String Name, Book Parent)
 		{
+			initialize(Name);
+			setParent(Parent);
+			FindAndSetPath();
+			
+		}
+		private void initialize(String Name)
+		{
 			this.Name=Name;
 			this.BookItems =new BindingList<Book>();
 			this.NoteItems =new BindingList<Note>();
-			setParent(Parent);
-			FindAndSetPath();
+			this.allnoteitems=new BindingList<Note>();
 		}
 		public String Name
 		{
 			get;set;
 		}
-		public int Level { 
+		public int Level {
 			get
 			{
 				return this.level;
@@ -59,6 +62,35 @@ namespace EMCNote
 				}
 			}
 		}
+		
+		public void UpdateAllNoteItems()
+		{
+			allnoteitems.Clear();
+			AddSubNote(this);
+		}
+		private void AddSubNote(Book b)
+		{
+			foreach( Note n in b.NoteItems)
+			{
+				allnoteitems.Add(n);
+			}
+			foreach (Book subb in b.BookItems)
+			{
+				AddSubNote(subb);
+			}
+		}
+		
+		
+		public BindingList<Note> AllNoteItems
+		{
+			get{
+				UpdateAllNoteItems();
+				return allnoteitems;
+			}
+			set{
+				UpdateAllNoteItems();
+			}
+		}
 		public BindingList<Note> NoteItems
 		{
 			//---TODO--- Readonly//
@@ -70,6 +102,7 @@ namespace EMCNote
 			//---TODO--- Readonly//
 			get;set;
 		}
+		
 		public Book Parent
 		{
 			get{
@@ -105,9 +138,7 @@ namespace EMCNote
 			UInt16 depth=1;
 			while(myBook.Parent!=null){
 				depth++;
-				if(depth>3){
-					throw new Exception("The depth of Book had exceeded 3."); //by design
-				}
+			
 				myBook=myBook.Parent;
 				myPath="/"+myBook.Name+myPath;
 			}
@@ -115,17 +146,17 @@ namespace EMCNote
 			this.setPath(myPath);
 		}
 	}
-	public class IndentConverter:System.Windows.Data.IValueConverter 
-    { 
-		private const int Indent=20;
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) 
-        { 
-        	var level = System.Convert.ToInt16(value);
-            return new System.Windows.Thickness(Indent* level -15, 0, 0, 0);
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo  culture) 
-        { 
-            throw new NotImplementedException(); 
-        } 
-    }
+	public class IndentConverter:System.Windows.Data.IValueConverter
+	{
+		private const int Indent=15;
+		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+		{
+			var level = System.Convert.ToInt16(value);
+			return new System.Windows.Thickness(Indent* level -15, 0, 0, 0);
+		}
+		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo  culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }
