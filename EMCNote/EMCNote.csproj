@@ -12,9 +12,21 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <ApplicationIcon>res\N.ico</ApplicationIcon>
     <NoWin32Manifest>False</NoWin32Manifest>
+    <SignAssembly>False</SignAssembly>
+    <DelaySign>False</DelaySign>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
+    <BaseAddress>4194304</BaseAddress>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <FileAlignment>4096</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -23,14 +35,16 @@
     <Optimize>False</Optimize>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <StartAction>Project</StartAction>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <OutputPath>bin\Release\</OutputPath>
     <DebugSymbols>False</DebugSymbols>
-    <DebugType>None</DebugType>
+    <DebugType>Full</DebugType>
     <Optimize>True</Optimize>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <DefineConstants>TRACE</DefineConstants>
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp">
@@ -77,6 +91,7 @@
       <DependentUpon>ColorPicker.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Hotkey.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -85,7 +100,9 @@
       <DependentUpon>NewBook.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Note.cs" />
+    <Compile Include="Note.cs">
+      <DependentUpon>Profile.cs</DependentUpon>
+    </Compile>
     <Compile Include="Profile.cs" />
     <Compile Include="ProfileHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -95,7 +112,9 @@
   <ItemGroup>
     <Page Include="ColorPicker.xaml" />
     <Page Include="lv_res.xaml" />
-    <Page Include="MainWindow.xaml" />
+    <Page Include="MainWindow.xaml">
+      <Generator>GetAllNoteItems</Generator>
+    </Page>
     <Page Include="menu_res.xaml" />
     <Page Include="NewBook.xaml" />
     <Page Include="res.xaml" />
@@ -126,12 +145,6 @@
     <Folder Include="demo" />
     <Folder Include="res" />
     <Folder Include="res\editor" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\html-xaml\convertHTML.csproj">
-      <Project>{DC692379-518F-4241-9BBA-4E3F4A9BCE13}</Project>
-      <Name>convertHTML</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
