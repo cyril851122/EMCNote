@@ -70,10 +70,7 @@ namespace EMCNote
 			appctr=AppController.GetInstance();
 			appctr.BindBookTree(tv_book);
 			appctr.BindNoteList(lv_note);
-			if(lv_note.HasItems==true && selectedNote== null)
-			{
-				lv_note.SelectedIndex=0;
-			}
+
 			DataObject.AddPastingHandler(rtb_note,rtb_note_Paste);
 			
 		}
@@ -176,25 +173,24 @@ namespace EMCNote
 			TreeViewItem tvi=e.OriginalSource as TreeViewItem;
 			selectedBook=tvi.Header as Book;
 			lv_note.ItemsSource=selectedBook.AllNoteItems;
-			
-			if(lv_note.HasItems==true && selectedNote== null)
-			{
-				lv_note.SelectedIndex=0;
-			}
 		}
 		
 		void SelectNote(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
 		{
-			
+			if (lv_note.SelectedIndex == -1)
+			{
+				return;
+			}
 			//Save First
 			update_note_source();
 			// load new
-			ListView lv= e.OriginalSource as ListView;
-			Note n = lv.SelectedItem as Note;
+			
+			Note n = lv_note.SelectedItem as Note;
 			if(n!=null)
 			{
 				selectedNote=n;
 				ShowNote(n);
+				rtb_note.Focus();
 				
 			}else
 			{
@@ -244,6 +240,7 @@ namespace EMCNote
 
 		void deleteBookClick(object sender, RoutedEventArgs e)
 		{
+			selectedBook=tv_book.SelectedItem as Book;
 			if (selectedBook !=null)
 			{
 				String msg="";
@@ -256,6 +253,7 @@ namespace EMCNote
 				{
 					appctr.deleteBook(selectedBook);
 				}
+				appctr.BindNoteList(lv_note);
 			}else{
 				MessageBox.Show("You didn't select any notebook.");
 			}
@@ -305,6 +303,7 @@ namespace EMCNote
 			e.Handled = true;
 			e.CancelCommand();
 			TextRange range = new TextRange(rtb_note.Selection.Start, rtb_note.Selection.End);
+			range.Text="";
 			if(Clipboard.ContainsImage())
 			{
 				System.Windows.Media.Imaging.BitmapSource img=Clipboard.GetImage();
@@ -328,9 +327,18 @@ namespace EMCNote
 			
 			if(Clipboard.ContainsData("HTML Format"))
 			{
-				range.Text=Clipboard.GetData("HTML Format").ToString();
+				PastedHtml ph=new PastedHtml(Clipboard.GetData("HTML Format").ToString());
+				if (ph.Paste is Inline)
+				{
+					TextPointer tp=rtb_note.CaretPosition.GetInsertionPosition(LogicalDirection.Forward);
+					Span s=new Span(ph.Paste as Span,tp);
+				}else if (ph.Paste is Block)
+				{
+					rtb_note.CaretPosition.InsertParagraphBreak();
+					rtb_note.Document.Blocks.InsertAfter( rtb_note.CaretPosition.Paragraph,ph.Paste as Section);
+				}
 			}
-			//range.Text=Clipboard.GetText();
+			
 			range.Select(range.End,range.End);
 		}
 		
@@ -352,6 +360,7 @@ namespace EMCNote
 					item.IsSelected = false;
 				}
 			}
+			
 		}
 
 		void Tv_book_MouseUp(object sender, MouseButtonEventArgs e)
@@ -359,7 +368,10 @@ namespace EMCNote
 			
 			if( !(e.OriginalSource is Border)&&!(e.OriginalSource is System.Windows.Controls.Image) && !(e.OriginalSource is TextBlock))
 			{
+				
 				UnselectTreeViewItem(tv_book);
+				
+				appctr.BindNoteList(lv_note);
 			}
 		}
 	}

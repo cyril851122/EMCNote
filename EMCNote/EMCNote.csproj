@@ -87,10 +87,6 @@
     </Compile>
     <Compile Include="AppController.cs" />
     <Compile Include="Book.cs" />
-    <Compile Include="ColorPicker.xaml.cs">
-      <DependentUpon>ColorPicker.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Hotkey.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -103,6 +99,7 @@
     <Compile Include="Note.cs">
       <DependentUpon>Profile.cs</DependentUpon>
     </Compile>
+    <Compile Include="PastedHtml.cs" />
     <Compile Include="Profile.cs" />
     <Compile Include="ProfileHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -110,7 +107,6 @@
     <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="ColorPicker.xaml" />
     <Page Include="lv_res.xaml" />
     <Page Include="MainWindow.xaml">
       <Generator>GetAllNoteItems</Generator>
@@ -145,6 +141,12 @@
     <Folder Include="demo" />
     <Folder Include="res" />
     <Folder Include="res\editor" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XAMLConverter\XAMLConverter.csproj">
+      <Project>{E1F3F7A0-5FE8-447D-B2EE-065B770B0712}</Project>
+      <Name>XAMLConverter</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -112,6 +112,10 @@ namespace EMCNote
 				                                          .Blocks
 				                                          .SelectMany(innerBlock => FindImages(innerBlock)));
 			}
+			if (block is Section)
+			{
+				return ((Section)block).Blocks.SelectMany(x => FindImages(x));
+			}
 			throw new InvalidOperationException("Unknown block type: " + block.GetType());
 		}
 	}

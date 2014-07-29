@@ -75,7 +75,7 @@ namespace EMCNote
 				return this.allnotes;
 			}
 			set{
-				UpdateAllNotes();
+				//UpdateAllNotes();
 			}
 		}
 

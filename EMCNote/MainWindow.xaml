@@ -66,7 +66,7 @@
 			              HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
 			<Border Grid.Column="1" BorderBrush="#D1D4DF" BorderThickness="0,0,1,0"/>
 			
-			<TreeView Name="tv_book"  Margin="1,0" BorderThickness="0" Background="#FBFCFF" Grid.Column="0" TreeViewItem.Selected="SelectBook" MouseUp="Tv_book_MouseUp">
+			<TreeView Name="tv_book"  Margin="1,0" BorderThickness="0" Background="#FBFCFF" Grid.Column="0" TreeViewItem.Selected="SelectBook" MouseUp="Tv_book_MouseUp" Focusable="False" IsTabStop="False">
 				<TreeView.ItemTemplate>
 					<HierarchicalDataTemplate DataType = "Book" ItemsSource="{Binding BookItems}">
 						<Border x:Name="itemBorder" >
@@ -78,7 +78,7 @@
 					</HierarchicalDataTemplate>
 				</TreeView.ItemTemplate>
 			</TreeView>
-			<ListView Name="lv_note" Grid.Column="1"  BorderThickness="0" Margin="1,0" Background="#FBFCFF" SelectionChanged="SelectNote">
+			<ListView Name="lv_note" Grid.Column="1"  BorderThickness="0" Margin="1,0" Background="#FBFCFF" SelectionChanged="SelectNote" Focusable="False" IsTabStop="False">
 				<ListView.ItemTemplate>
 					<HierarchicalDataTemplate DataType="Book" ItemsSource="{Binding NoteItems}">
 						<StackPanel Orientation="Vertical">
@@ -172,7 +172,7 @@
 							<Button Command="EditingCommands.ToggleNumbering" ToolTip="Numbering"><Image Source="res/editor/number.png"/></Button>
 						</StackPanel>
 					</ToolBar>
-					<RichTextBox Name="rtb_note" BorderThickness="0" LostFocus="Rtb_note_LostFocus"  Margin="1,2,1,1">
+					<RichTextBox Name="rtb_note" BorderThickness="0" LostFocus="Rtb_note_LostFocus"  Margin="1,2,1,1" VerticalScrollBarVisibility="Auto">
 					</RichTextBox>
 				</DockPanel>
 			</Grid>

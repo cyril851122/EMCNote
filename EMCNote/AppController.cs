@@ -58,6 +58,10 @@ namespace EMCNote
 		public void BindNoteList(System.Windows.Controls.ListView lv)
 		{
 			lv.ItemsSource=(current_profile.AllNotes);
+			if(lv.HasItems==true)
+			{
+				lv.SelectedIndex=0;
+			}
 		}
 		
 		public void newNote(String Title, Book b)

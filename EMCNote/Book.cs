@@ -88,7 +88,7 @@ namespace EMCNote
 				return allnoteitems;
 			}
 			set{
-				UpdateAllNoteItems();
+				//UpdateAllNoteItems();
 			}
 		}
 		public BindingList<Note> NoteItems
