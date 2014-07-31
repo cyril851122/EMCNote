@@ -18,7 +18,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-
+using System.Text.RegularExpressions;
+using HTMLConverter;
 using EMCNote;
 
 namespace EMCNote
@@ -71,7 +72,7 @@ namespace EMCNote
 			appctr.BindBookTree(tv_book);
 			appctr.BindNoteList(lv_note);
 
-			DataObject.AddPastingHandler(rtb_note,rtb_note_Paste);
+			//DataObject.AddPastingHandler(rtb_note,rtb_note_Paste);
 			
 		}
 		
@@ -142,6 +143,7 @@ namespace EMCNote
 		}
 		void menuNewNoteClick(object sender, System.Windows.RoutedEventArgs e)
 		{
+			selectedBook =tv_book.SelectedItem as Book;
 			if(selectedBook!=null)
 			{
 				appctr.newNote("New Note",selectedBook);
@@ -201,15 +203,19 @@ namespace EMCNote
 		
 		void ShowNote(Note n)
 		{
-			if(n.Document!=null)
-			{
-				rtb_note.Document=n.Document;
-			}else
-			{
-				rtb_note.Document=new FlowDocument();
+			if(n!=null){
+				if(n.Document!=null)
+				{
+					rtb_note.Document=n.Document;
+				}else
+				{
+					rtb_note.Document=new FlowDocument();
+				}
+				tb_title.Text=n.Title;
+				grid_noteview.Visibility=Visibility.Visible;
+			}else{
+				grid_noteview.Visibility=Visibility.Hidden;
 			}
-			tb_title.Text=n.Title;
-			grid_noteview.Visibility=Visibility.Visible;
 		}
 		void SaveNoteClick(object sender, RoutedEventArgs e)
 		{
@@ -254,6 +260,7 @@ namespace EMCNote
 					appctr.deleteBook(selectedBook);
 				}
 				appctr.BindNoteList(lv_note);
+				selectedBook=null;
 			}else{
 				MessageBox.Show("You didn't select any notebook.");
 			}
@@ -274,6 +281,8 @@ namespace EMCNote
 					selectedBook.AllNoteItems=selectedBook.AllNoteItems;
 				}else{
 					appctr.BindNoteList(lv_note);
+					selectedNote=null;
+					ShowNote(selectedNote);
 				}
 			}else{
 				
@@ -300,12 +309,13 @@ namespace EMCNote
 		
 		void rtb_note_Paste(object sender, DataObjectPastingEventArgs e)
 		{
-			e.Handled = true;
-			e.CancelCommand();
+			
 			TextRange range = new TextRange(rtb_note.Selection.Start, rtb_note.Selection.End);
 			range.Text="";
 			if(Clipboard.ContainsImage())
 			{
+				e.Handled = true;
+				e.CancelCommand();
 				System.Windows.Media.Imaging.BitmapSource img=Clipboard.GetImage();
 				if(selectedNote==null)
 				{
@@ -323,22 +333,50 @@ namespace EMCNote
 				i.Source=img;
 				i.Tag=id;
 				InlineUIContainer iuc=new InlineUIContainer(i,rtb_note.CaretPosition);
-			}
-			
-			if(Clipboard.ContainsData("HTML Format"))
+			}else if(Clipboard.ContainsData("HTML Format"))
 			{
-				PastedHtml ph=new PastedHtml(Clipboard.GetData("HTML Format").ToString());
-				if (ph.Paste is Inline)
+				e.Handled = true;
+				e.CancelCommand();
+				String HtmlCode=Clipboard.GetData("HTML Format").ToString();
+				HtmlCode=HtmlCode.Replace("&nbsp;"," ");
+				HtmlCode=HtmlCode.Replace('\r',' ');
+				HtmlCode=HtmlCode.Replace('\n',' ');
+				
+				HtmlCode=Regex.Match(HtmlCode,"<html.*$",RegexOptions.Multiline|RegexOptions.IgnoreCase).Value;
+				
+				String xamlsource=HtmlToXamlConverter.ConvertHtmlToXaml(HtmlCode,false);
+				TextElement elem=System.Windows.Markup.XamlReader.Parse(xamlsource) as TextElement;
+				//
+				foreach (System.Windows.Controls.Image img in Utility.FindImages(elem))
+				{
+					Int32 id=0;
+					while(selectedNote.Attachments.ContainsKey(id))
+					{
+						id++;
+					}
+					img.Tag=id;
+					selectedNote.Attachments.Add(id ,img.Source as System.Windows.Media.Imaging.BitmapSource);
+					
+				}
+				
+				if (elem is Inline)
 				{
 					TextPointer tp=rtb_note.CaretPosition.GetInsertionPosition(LogicalDirection.Forward);
-					Span s=new Span(ph.Paste as Span,tp);
-				}else if (ph.Paste is Block)
+					Span s=new Span(elem as Span,tp);
+				}else if (elem is Block)
 				{
 					rtb_note.CaretPosition.InsertParagraphBreak();
-					rtb_note.Document.Blocks.InsertAfter( rtb_note.CaretPosition.Paragraph,ph.Paste as Section);
+					rtb_note.Document.Blocks.InsertAfter( rtb_note.CaretPosition.Paragraph,elem as Section);
 				}
+			}else if(Clipboard.ContainsData("XamlPackage"))
+			{
+				e.Handled = true;
+				e.CancelCommand();
+				System.IO.MemoryStream ms=Clipboard.GetData("XamlPackage") as System.IO.MemoryStream;
+				ms.Position=0;
+				
 			}
-			
+			Debug.Print(String.Join(",",Clipboard.GetDataObject().GetFormats()));
 			range.Select(range.End,range.End);
 		}
 		

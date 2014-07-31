@@ -99,7 +99,6 @@
     <Compile Include="Note.cs">
       <DependentUpon>Profile.cs</DependentUpon>
     </Compile>
-    <Compile Include="PastedHtml.cs" />
     <Compile Include="Profile.cs" />
     <Compile Include="ProfileHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

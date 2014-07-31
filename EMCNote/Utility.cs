@@ -82,6 +82,17 @@ namespace EMCNote
 			return document.Blocks.SelectMany(block => FindImages(block));
 		}
 
+		
+		public static IEnumerable<System.Windows.Controls.Image> FindImages(TextElement elem)
+		{
+			if(elem is Inline)
+			{
+				return FindImages(elem as Span);
+			}else
+			{
+				return FindImages(elem as Section);
+			}
+		}
 		public static IEnumerable<System.Windows.Controls.Image> FindImages(Block block)
 		{
 			if (block is Table)
@@ -94,10 +105,7 @@ namespace EMCNote
 			}
 			if (block is Paragraph)
 			{
-				return ((Paragraph)block).Inlines
-					.OfType<InlineUIContainer>()
-					.Where(x => x.Child is System.Windows.Controls.Image)
-					.Select(x => x.Child as System.Windows.Controls.Image);
+				return ((Paragraph)block).Inlines.SelectMany(x => FindImages(x));
 			}
 			if (block is BlockUIContainer)
 			{
@@ -116,7 +124,25 @@ namespace EMCNote
 			{
 				return ((Section)block).Blocks.SelectMany(x => FindImages(x));
 			}
-			throw new InvalidOperationException("Unknown block type: " + block.GetType());
+			return new List<System.Windows.Controls.Image>();
+		}
+		public static IEnumerable<System.Windows.Controls.Image> FindImages(Inline inline)
+		{
+			if(inline is Span)
+			{
+				return (inline as Span).Inlines.SelectMany(x => FindImages(x));
+			}
+			if(inline is InlineUIContainer)
+			{
+				System.Windows.Controls.Image i = ((InlineUIContainer)inline).Child as System.Windows.Controls.Image;
+				return i == null
+					? new List<System.Windows.Controls.Image>()
+					: new List<System.Windows.Controls.Image>(new[] { i });
+			}
+			
+			return new List<System.Windows.Controls.Image>();
+			
+			
 		}
 	}
 }

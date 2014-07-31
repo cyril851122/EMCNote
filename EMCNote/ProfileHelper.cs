@@ -94,7 +94,6 @@ namespace EMCNote
 			{
 				BitmapSource bms=n.Attachments[Convert.ToInt32(img.Tag)];
 				img.Source=bms;
-				
 				SaveAttachment(attachement_node,img.Tag.ToString(),bms);
 			}
 			//SaveAttachments(attachement_node,n.Attachments);
@@ -110,7 +109,7 @@ namespace EMCNote
 			att_node.AppendChild(image_xe);
 			
 		}
-		private void SaveAttachments(XmlNode att_node,Dictionary<int,BitmapSource> att)
+		private void SaveAttachments(XmlNode att_node,Dictionary<int,BitmapSource> att)  //discarded
 		{
 			//
 			foreach (KeyValuePair<int,BitmapSource> kw_pair in att)
