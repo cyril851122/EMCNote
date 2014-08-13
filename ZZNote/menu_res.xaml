@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	x:Class="ZZNote.MenuTemplate"
 >
 	
 	<Style x:Key="{x:Type Menu}" TargetType="{x:Type Menu}">
@@ -16,7 +17,14 @@
 								<GradientStop Color="#F1F2FF" Offset="1" />
 							</LinearGradientBrush>
 						</Border.Background>
-						<StackPanel ClipToBounds="True" Orientation="Horizontal" IsItemsHost="True"  />
+						<DockPanel>
+							<StackPanel ClipToBounds="True" Orientation="Horizontal" IsItemsHost="True"  />
+							<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="32px">
+								<Button BorderThickness="0" BorderBrush="Transparent" Background="Transparent" Height="24px" Width="24px" Click="AboutClick">
+									<Image Source="res/help.png" Height="16" Width="16"></Image>
+								</Button>
+							</StackPanel>
+						</DockPanel>
 					</Border>
 				</ControlTemplate>
 			</Setter.Value>

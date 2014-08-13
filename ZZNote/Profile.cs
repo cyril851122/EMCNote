@@ -10,7 +10,7 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 
-namespace EMCNote
+namespace ZZNote
 {
 	/// <summary>
 	/// Description of Profile.

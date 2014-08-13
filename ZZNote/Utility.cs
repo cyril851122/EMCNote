@@ -17,7 +17,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Xml;
 
-namespace EMCNote
+namespace ZZNote
 {
 	/// <summary>
 	/// Description of Util.

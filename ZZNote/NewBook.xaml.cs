@@ -16,7 +16,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace EMCNote
+namespace ZZNote
 {
 	/// <summary>
 	/// Interaction logic for NewBook.xaml

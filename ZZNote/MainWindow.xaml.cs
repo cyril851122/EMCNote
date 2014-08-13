@@ -19,10 +19,12 @@ using System.Windows.Media;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using HTMLConverter;
-using EMCNote;
 
-namespace EMCNote
+using HTMLConverter;
+
+using ZZNote;
+
+namespace ZZNote
 {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
@@ -32,11 +34,11 @@ namespace EMCNote
 	{
 		private System.Windows.Forms.NotifyIcon notifyIcon;
 		private System.Windows.Forms.ContextMenu notificationMenu;
-		
+
 		private Note selectedNote;
 		private Book selectedBook;
 		AppController appctr;
-		
+		public static MainWindow instance;
 		HotKey k;
 		
 		private void WindowMouseDown(object sender, MouseEventArgs e)
@@ -49,6 +51,7 @@ namespace EMCNote
 		}
 		public MainWindow()
 		{
+			MainWindow.instance=this;
 			InitializeComponent();
 			this.Closing += WindowHide;
 			this.Closed+=WindowClose;
@@ -71,9 +74,7 @@ namespace EMCNote
 			appctr=AppController.GetInstance();
 			appctr.BindBookTree(tv_book);
 			appctr.BindNoteList(lv_note);
-
-			//DataObject.AddPastingHandler(rtb_note,rtb_note_Paste);
-			
+			DataObject.AddPastingHandler(rtb_note,rtb_note_Paste);
 		}
 		
 		
@@ -104,7 +105,7 @@ namespace EMCNote
 			notifyIcon = new System.Windows.Forms.NotifyIcon();
 			notificationMenu = new System.Windows.Forms.ContextMenu(InitializeMenu());
 			notifyIcon.DoubleClick += menuMainClick;
-			Icon ico=new Icon(System.Reflection.Assembly.Load("EMCNote").GetManifestResourceStream("EMCNote.res.N.ico"));
+			Icon ico=new Icon(System.Reflection.Assembly.Load("ZZNote").GetManifestResourceStream("ZZNote.res.N.ico"));
 			notifyIcon.Icon = ico;
 			notifyIcon.ContextMenu = notificationMenu;
 			notifyIcon.Visible=true;
@@ -114,7 +115,7 @@ namespace EMCNote
 		private System.Windows.Forms.MenuItem[] InitializeMenu()
 		{
 			System.Windows.Forms.MenuItem[] menu = new System.Windows.Forms.MenuItem[] {
-				new System.Windows.Forms.MenuItem("EMC Note", menuMainClick),
+				new System.Windows.Forms.MenuItem("ZZNote", menuMainClick),
 				new System.Windows.Forms.MenuItem("Exit", menuExitClick)
 			};
 			menu[0].DefaultItem=true;
@@ -132,6 +133,11 @@ namespace EMCNote
 				this.Hide();
 				this.WindowState=WindowState.Minimized;
 			}
+			
+		}
+		
+		private void AboutClick(object sender, EventArgs e)
+		{
 			
 		}
 		
@@ -175,6 +181,9 @@ namespace EMCNote
 			TreeViewItem tvi=e.OriginalSource as TreeViewItem;
 			selectedBook=tvi.Header as Book;
 			lv_note.ItemsSource=selectedBook.AllNoteItems;
+			
+			
+			
 		}
 		
 		void SelectNote(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -237,8 +246,8 @@ namespace EMCNote
 			{
 				selectedNote.Document=rtb_note.Document;
 				System.Xml.XmlDocument xd=new System.Xml.XmlDocument();
-				xd.LoadXml(System.Windows.Markup.XamlWriter.Save(rtb_note.Document));
-				selectedNote.Content=xd.InnerText;
+				TextRange range=new TextRange(rtb_note.Document.ContentStart,rtb_note.Document.ContentEnd);
+				selectedNote.Content=range.Text;
 				selectedNote.Title=tb_title.Text;
 			}
 		}
@@ -374,6 +383,20 @@ namespace EMCNote
 				e.CancelCommand();
 				System.IO.MemoryStream ms=Clipboard.GetData("XamlPackage") as System.IO.MemoryStream;
 				ms.Position=0;
+				range.Load(ms,"XamlPackage");
+				foreach (System.Windows.Controls.Image img in Utility.FindImages(rtb_note.Document))
+				{
+					if(img.Tag==null)
+					{
+						Int32 id=0;
+						while(selectedNote.Attachments.ContainsKey(id))
+						{
+							id++;
+						}
+						img.Tag=id;
+						selectedNote.Attachments.Add(id ,img.Source as System.Windows.Media.Imaging.BitmapSource);
+					}
+				}
 				
 			}
 			Debug.Print(String.Join(",",Clipboard.GetDataObject().GetFormats()));
@@ -398,7 +421,7 @@ namespace EMCNote
 					item.IsSelected = false;
 				}
 			}
-			
+			selectedBook=null;
 		}
 
 		void Tv_book_MouseUp(object sender, MouseButtonEventArgs e)
@@ -413,5 +436,15 @@ namespace EMCNote
 			}
 		}
 	}
-	
+	public partial class MenuTemplate : ResourceDictionary
+    {
+
+        public void AboutClick(object sender, RoutedEventArgs e)
+        {
+        	About about_win=new About();
+        	about_win.Owner=MainWindow.instance;
+        	about_win.ShowDialog();
+        }
+
+    }
 }

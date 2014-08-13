@@ -11,7 +11,7 @@ using System.IO;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Linq;
-namespace EMCNote
+namespace ZZNote
 {
 	/// <summary>
 	/// Description of AppController.

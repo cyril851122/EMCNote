@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-	 xmlns:emcnote="clr-namespace:EMCNote" 
+	 xmlns:ZZNote="clr-namespace:ZZNote" 
 >
 			<LinearGradientBrush StartPoint="0,0" EndPoint=".5,1" x:Key="ListViewItemBG">
 				<GradientStop Offset="0" Color="#FFFFFF" />

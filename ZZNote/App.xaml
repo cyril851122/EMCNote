@@ -1,4 +1,4 @@
-﻿<Application x:Class="EMCNote.App"
+﻿<Application x:Class="ZZNote.App"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	StartupUri="MainWindow.xaml">

@@ -16,7 +16,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
-namespace EMCNote
+namespace ZZNote
 {
 	/// <summary>
 	/// Description of Hotkey.

@@ -6,8 +6,8 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>EMCNote</RootNamespace>
-    <AssemblyName>EMCNote</AssemblyName>
+    <RootNamespace>ZZNote</RootNamespace>
+    <AssemblyName>ZZNote</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <ApplicationIcon>res\N.ico</ApplicationIcon>
@@ -81,6 +81,10 @@
     <ApplicationDefinition Include="App.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="About.xaml.cs">
+      <DependentUpon>About.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>App.xaml</DependentUpon>
@@ -106,6 +110,7 @@
     <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="About.xaml" />
     <Page Include="lv_res.xaml" />
     <Page Include="MainWindow.xaml">
       <Generator>GetAllNoteItems</Generator>
@@ -120,6 +125,8 @@
     <None Include="default.enp">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
+    <Resource Include="res\about_bg.jpg" />
+    <Resource Include="res\help.png" />
     <Resource Include="res\editor\color.png" />
     <Resource Include="res\add_icon.png" />
     <Resource Include="res\book_icon.png" />

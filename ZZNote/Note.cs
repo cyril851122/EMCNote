@@ -12,7 +12,7 @@ using System.Windows.Documents;
 using System.Collections.Generic; 
 using System.Windows.Media.Imaging;
 
-namespace EMCNote
+namespace ZZNote
 {
 	/// <summary>
 	/// Description of Note.
@@ -78,9 +78,8 @@ namespace EMCNote
 		{
 			get
 			{
-				String pure=System.Text.RegularExpressions.Regex.Replace(Content,"\\<\\/?[\\w]+\\>","");
-				pure=System.Text.RegularExpressions.Regex.Replace(pure,"\\r|\\n|\\t","");
-				return pure.Substring(0,pure.Length>100?100:pure.Length);
+				
+				return Content.Trim().Replace('\r',' ').Replace('\n',' ').Substring(0,Content.Length>20?20:Content.Length);
 			}
 		}
 		

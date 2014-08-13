@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;
 
-namespace EMCNote
+namespace ZZNote
 {
 	/// <summary>
 	/// Description of Profile.
