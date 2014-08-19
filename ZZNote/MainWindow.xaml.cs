@@ -298,14 +298,7 @@ namespace ZZNote
 				MessageBox.Show("You didn't select any note.");
 			}
 		}
-		void deleteButtonClick(object sender, RoutedEventArgs e)
-		{
-			Button b=e.OriginalSource as Button;
-			b.ContextMenu.PlacementTarget=b;
-			b.ContextMenu.Placement=System.Windows.Controls.Primitives.PlacementMode.Bottom;
-			b.ContextMenu.IsOpen=true;
-			
-		}
+
 
 		void changeColor(object sender, RoutedEventArgs e)
 		{
@@ -427,24 +420,50 @@ namespace ZZNote
 		void Tv_book_MouseUp(object sender, MouseButtonEventArgs e)
 		{
 			
-			if( !(e.OriginalSource is Border)&&!(e.OriginalSource is System.Windows.Controls.Image) && !(e.OriginalSource is TextBlock))
+			if(e.ChangedButton==MouseButton.Left)
 			{
-				
-				UnselectTreeViewItem(tv_book);
-				
-				appctr.BindNoteList(lv_note);
+				e.Handled=true;
+				if( !(e.OriginalSource is Border)&&!(e.OriginalSource is System.Windows.Controls.Image) && !(e.OriginalSource is TextBlock))
+				{
+					UnselectTreeViewItem(tv_book);
+					appctr.BindNoteList(lv_note);
+				}
 			}
+			
 		}
 	}
 	public partial class MenuTemplate : ResourceDictionary
-    {
+	{
 
-        public void AboutClick(object sender, RoutedEventArgs e)
-        {
-        	About about_win=new About();
-        	about_win.Owner=MainWindow.instance;
-        	about_win.ShowDialog();
-        }
+		public void AboutClick(object sender, RoutedEventArgs e)
+		{
+			About about_win=new About();
+			about_win.Owner=MainWindow.instance;
+			about_win.ShowDialog();
+		}
 
-    }
+	}
+	
+	public partial class TreeViewTemplate : ResourceDictionary
+	{
+		public void TreeViewItem_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs  e)
+		{
+			
+			var treeViewItem = VisualUpwardSearch<TreeViewItem>(e.OriginalSource as DependencyObject) as TreeViewItem;
+			
+			if (treeViewItem != null)
+			{
+				treeViewItem.IsSelected=true;
+				treeViewItem.Focus();
+				e.Handled = true;
+			}
+		}
+		static DependencyObject VisualUpwardSearch<T>(DependencyObject source)
+		{
+			while (source != null && source.GetType() != typeof(T))
+				source = VisualTreeHelper.GetParent(source);
+
+			return source;
+		}
+	}
 }

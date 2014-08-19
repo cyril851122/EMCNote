@@ -78,8 +78,8 @@ namespace ZZNote
 		{
 			get
 			{
-				
-				return Content.Trim().Replace('\r',' ').Replace('\n',' ').Substring(0,Content.Length>20?20:Content.Length);
+				string tmp=Content.Trim().Replace('\r',' ').Replace('\n',' ');
+				return tmp.Substring(0,tmp.Length>20?20:tmp.Length);
 			}
 		}
 		

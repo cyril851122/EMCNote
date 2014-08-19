@@ -20,40 +20,39 @@
 	<DockPanel>
 		<StackPanel DockPanel.Dock="Top" Orientation="Vertical">
 			<Menu>
-
-					<MenuItem Click="SaveNoteClick" >
-						
-						<MenuItem.Header>
-							<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-								<Image Source="res/save_icon.png" Width="16" Height="16" Margin="0,0,5,0"></Image>
-								<TextBlock Text="Save" Height="16"></TextBlock>
-							</StackPanel>
-						</MenuItem.Header>
+				
+				<MenuItem Click="SaveNoteClick" >
 					
-					</MenuItem>
-					<MenuItem>
-						<MenuItem.Header>
-							<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-								<Image Source="res/add_icon.png" Width="16" Height="16" Margin="0,0,5,0"></Image>
-								<TextBlock Text="New" Height="16"></TextBlock>
-								<Polygon Stroke="Black" StrokeThickness="1" Points="6,8 10,8 8,10" Fill="Black" Height="16" Opacity="0.5"/>
-							</StackPanel>
-						</MenuItem.Header>
-						<MenuItem Header="New Note" Click="menuNewNoteClick"/>
-						<MenuItem Header="New Book" Click="menuNewBookClick"/>
-					</MenuItem>
-					<MenuItem>
-						<MenuItem.Header>
-							<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-								<Image Source="res/delete_icon.png" Width="16" Height="16" Margin="0,0,5,0"></Image>
-								<TextBlock Text="Delete" Height="16"></TextBlock>
-								<Polygon Stroke="Black" StrokeThickness="1" Points="6,8 10,8 8,10" Height="16" Fill="Black" Opacity="0.5"/>
-							</StackPanel>
-						</MenuItem.Header>
-						<MenuItem Header="Delete Note" Click="deleteNoteClick"/>
-						<MenuItem Header="Delete Book" Click="deleteBookClick"/>
-					</MenuItem>
-
+					<MenuItem.Header>
+						<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+							<Image Source="res/save_icon.png" Width="16" Height="16" Margin="0,0,5,0"></Image>
+							<TextBlock Text="Save" Height="16"></TextBlock>
+						</StackPanel>
+					</MenuItem.Header>
+				
+				</MenuItem>
+				<MenuItem>
+					<MenuItem.Header>
+						<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+							<Image Source="res/add_icon.png" Width="16" Height="16" Margin="0,0,5,0"></Image>
+							<TextBlock Text="New" Height="16"></TextBlock>
+							<Polygon Stroke="Black" StrokeThickness="1" Points="6,8 10,8 8,10" Fill="Black" Height="16" Opacity="0.5"/>
+						</StackPanel>
+					</MenuItem.Header>
+					<MenuItem Header="New Note" Click="menuNewNoteClick"/>
+					<MenuItem Header="New Book" Click="menuNewBookClick"/>
+				</MenuItem>
+				<MenuItem>
+					<MenuItem.Header>
+						<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+							<Image Source="res/delete_icon.png" Width="16" Height="16" Margin="0,0,5,0"></Image>
+							<TextBlock Text="Delete" Height="16"></TextBlock>
+							<Polygon Stroke="Black" StrokeThickness="1" Points="6,8 10,8 8,10" Height="16" Fill="Black" Opacity="0.5"/>
+						</StackPanel>
+					</MenuItem.Header>
+					<MenuItem Header="Delete Note" Click="deleteNoteClick"/>
+					<MenuItem Header="Delete Book" Click="deleteBookClick"/>
+				</MenuItem>
 			</Menu>
 		</StackPanel>
 		<Grid >
@@ -67,6 +66,13 @@
 			<Border Grid.Column="1" BorderBrush="#D1D4DF" BorderThickness="0,0,1,0"/>
 			
 			<TreeView Name="tv_book"  Margin="1,0" BorderThickness="0" Background="#FBFCFF" Grid.Column="0" TreeViewItem.Selected="SelectBook" MouseUp="Tv_book_MouseUp" Focusable="False" IsTabStop="False">
+				<TreeView.ContextMenu>
+					<ContextMenu>
+						<MenuItem Header="New Book" Click="menuNewBookClick"></MenuItem>
+						<MenuItem Header="New Note" Click="menuNewNoteClick"></MenuItem>
+						<MenuItem Header="Delete Book" Click="deleteBookClick"></MenuItem>
+					</ContextMenu>
+				</TreeView.ContextMenu>
 				<TreeView.ItemTemplate>
 					<HierarchicalDataTemplate DataType = "Book" ItemsSource="{Binding BookItems}">
 						<Border x:Name="itemBorder" >
@@ -79,6 +85,12 @@
 				</TreeView.ItemTemplate>
 			</TreeView>
 			<ListView Name="lv_note" Grid.Column="1"  BorderThickness="0" Margin="1,0" Background="#FBFCFF" SelectionChanged="SelectNote" Focusable="False" IsTabStop="False">
+				<ListView.ContextMenu>
+					<ContextMenu>
+						<MenuItem Header="New Note" Click="menuNewNoteClick"></MenuItem>
+						<MenuItem Header="Delete" Click="deleteNoteClick"></MenuItem>
+					</ContextMenu>
+				</ListView.ContextMenu>
 				<ListView.ItemTemplate>
 					<HierarchicalDataTemplate DataType="Book" ItemsSource="{Binding NoteItems}">
 						<StackPanel Orientation="Vertical">
