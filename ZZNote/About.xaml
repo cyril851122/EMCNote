@@ -11,12 +11,11 @@
 			<FlowDocumentScrollViewer.Document>
 				<FlowDocument FontSize="14">
 					<Paragraph TextAlignment="Center" FontSize="20" FontWeight="Bold">ZZNote</Paragraph>
-					<Paragraph>
-						<Image Source="res/help.png" Width="20" Height="20"></Image>
-						#INTRODUCTION#
+					<Paragraph TextAlignment="Center">
+						<Image Source="res/0.jpg" Width="64" Height="64"></Image>
 					</Paragraph>
 					<Paragraph>
-						<Hyperlink NavigateUri="mailto:cyril851122@163.com"	RequestNavigate="Hyperlink_RequestNavigate">Mail Me</Hyperlink>
+						请给大师打钱。支持大师走出保定，走向东南雅。 <LineBreak></LineBreak>支付宝：　cyril851122@163.com
 					</Paragraph>
 					<Paragraph>
 						<Hyperlink NavigateUri="https://github.com/cyril851122/ZZNote" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/cyril851122/ZZNote</Hyperlink>

@@ -125,6 +125,7 @@
     <None Include="default.enp">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
+    <Resource Include="res\0.jpg" />
     <Resource Include="res\about_bg.jpg" />
     <Resource Include="res\help.png" />
     <Resource Include="res\editor\color.png" />
