@@ -144,5 +144,26 @@ namespace ZZNote
 			
 			
 		}
+		
+		static public Dictionary<String,String> getConfig()
+		{
+			Dictionary<String,String> d=new Dictionary<string, string>();
+			String iniFile=System.Windows.Forms.Application.StartupPath+"\\zzConf.ini";
+			if(!System.IO.File.Exists(iniFile))
+			{
+				System.IO.File.WriteAllText(iniFile,"DataFile:\\\\cncd2fs1\\HOME\\zznote.znd");
+			}
+			String[] lines=System.IO.File.ReadAllLines(iniFile);
+			foreach(String line in lines)
+			{
+				String[] kwp=line.Split(':');
+				if(kwp.Count()==2){
+					d.Add(kwp[0].Trim(),kwp[1].Trim());
+				}else{
+					throw new Exception("Please Check zzConf.ini");
+				}
+			}
+			return d;
+		}
 	}
 }

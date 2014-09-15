@@ -37,7 +37,9 @@ namespace ZZNote
 		}
 		private void LoadDefaultProfile()
 		{
-			String filename=Application.StartupPath+"\\default.enp";
+			System.Collections.Generic.Dictionary<String,String> conf=Utility.getConfig();
+			String filename=conf.ContainsKey("DataFile")? conf["DataFile"]: "\\\\cncd2fs1\\HOME\\zznote.znd";
+			System.Diagnostics.Debug.Print(filename);
 			if(File.Exists(filename))
 			{
 				current_profile=LoadProfile(filename);

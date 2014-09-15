@@ -100,9 +100,7 @@
       <DependentUpon>NewBook.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Note.cs">
-      <DependentUpon>Profile.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Note.cs" />
     <Compile Include="Profile.cs" />
     <Compile Include="ProfileHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -170,7 +170,16 @@ namespace ZZNote
 				{
 					appctr.newBook(bookname,selectedBook);
 				}else{
-					appctr.newBook(bookname);
+					try 
+					{
+					
+						appctr.newBook(bookname);
+					}catch (Exception ex)
+					{
+						MessageBox.Show(ex.Message);
+						
+						MessageBox.Show(ex.StackTrace);
+					}
 				}
 			}
 			
